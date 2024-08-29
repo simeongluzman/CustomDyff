@@ -116,18 +116,28 @@ func (report *HumanReport) WriteReport(out io.Writer) error {
 
 // generateHumanDiffOutput creates a human readable report of the provided diff and writes this into the given bytes buffer. There is an optional flag to indicate whether the document index (which documents of the input file) should be included in the report of the path of the difference.
 func (report *HumanReport) generateHumanDiffOutput(output stringWriter, diff Diff, useGoPatchPaths bool, showPathRoot bool) error {
-	_, _ = output.WriteString("\n")
-	_, _ = output.WriteString(pathToString(diff.Path, useGoPatchPaths, showPathRoot))
-	_, _ = output.WriteString("\n")
 
 	blocks := make([]string, len(diff.Details))
+	var exampleFlag = false
 	for i, detail := range diff.Details {
 		generatedOutput, err := report.generateHumanDetailOutput(detail)
+
 		if err != nil {
 			return err
 		}
+		if strings.Contains(generatedOutput, "example") {
+			exampleFlag = true
+			continue
+
+		}
 
 		blocks[i] = generatedOutput
+	}
+
+	if !exampleFlag {
+		_, _ = output.WriteString("\n")
+		_, _ = output.WriteString(pathToString(diff.Path, useGoPatchPaths, showPathRoot))
+		_, _ = output.WriteString("\n")
 	}
 
 	// For the use case in which only a path-less diff is suppose to be printed,
@@ -178,6 +188,7 @@ func (report *HumanReport) generateHumanDetailOutputAddition(detail Detail) (str
 	}
 
 	ytbx.RestructureObject(detail.To)
+
 	yamlOutput, err := yamlStringInGreenishColors(detail.To)
 	if err != nil {
 		return "", err
