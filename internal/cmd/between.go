@@ -95,21 +95,9 @@ types are: YAML (http://yaml.org/) and JSON (http://json.org/).
 			return fmt.Errorf("failed to compare input files: %w", err)
 		}
 
-		if reportOptions.filters != nil {
-			report = report.Filter(reportOptions.filters...)
-		}
-
-		if reportOptions.filterRegexps != nil {
-			report = report.FilterRegexp(reportOptions.filterRegexps...)
-		}
-
-		if reportOptions.excludes != nil {
-			report = report.Exclude(reportOptions.excludes...)
-		}
-
-		if reportOptions.excludeRegexps != nil {
-			report = report.ExcludeRegexp(reportOptions.excludeRegexps...)
-		}
+		// Filter report to get rid of "description" fields.
+		desc := "description"
+		report = report.ExcludeRegexp(desc)
 
 		return writeReport(cmd, report)
 	},

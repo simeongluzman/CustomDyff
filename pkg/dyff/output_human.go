@@ -72,12 +72,13 @@ func (report *HumanReport) WriteReport(out io.Writer) error {
 
 	// Show banner if enabled
 	if !report.OmitHeader {
-		var header = fmt.Sprintf(`     _        __  __
-   _| |_   _ / _|/ _|  between %s
- / _' | | | | |_| |_       and %s
-| (_| | |_| |  _|  _|
- \__,_|\__, |_| |_|   returned %s
-        |___/
+		var header = fmt.Sprintf(`   _  _   _    _  _
+ __ __  ____  _____	
+| || | |  _ \ |  _ \       between %s
+| || | | |_|/ |_| |/       and %s
+| || | | |_|\ | |_| \  
+ \__/  |____/ |_| |_|      returned %s
+        
 `,
 			ytbx.HumanReadableLocationInformation(report.From),
 			ytbx.HumanReadableLocationInformation(report.To),
